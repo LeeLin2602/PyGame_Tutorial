@@ -216,7 +216,7 @@ import pygame
 
 pygame.init()
 
-window = pygame.display.set_mode((1600,900))
+window = pygame.display.set_mode((1200,500))
 pygame.display.set_caption("PyGame - Image Sample Code")
 window.fill((255, 255, 255))
 
@@ -237,7 +237,7 @@ while True:
 這份 code 和前面的字體渲染長的很像，只是改成了圖片渲染。
 
 效果圖如下：
-![](https://i.imgur.com/vJW9oeB.jpg)
+![](https://i.imgur.com/beyLvVT.jpg)
 
 不過兩張卡片的大小不一似乎挺令人困擾的，如果同一份素材可以在不同的地方隨我心意縮放，似乎會更方便？
 
@@ -248,18 +248,18 @@ import pygame
 
 pygame.init()
 
-window = pygame.display.set_mode((600,440))
+window = pygame.display.set_mode((1200,450))
 pygame.display.set_caption("PyGame - Image Sample Code")
 window.fill((255, 255, 255))
 
 img1 = pygame.image.load('pic1.jpg')
 img2 = pygame.image.load('pic2.jpg')
-img1 = pygame.transform.scale(img1, (300, 440))
-img2 = pygame.transform.scale(img2, (300, 440))
+img1 = pygame.transform.scale(img1, (600, 450))
+img2 = pygame.transform.scale(img2, (600, 450))
 img1 = pygame.transform.rotate(img1, 1)
 
 window.blit(img1,(0, 0))
-window.blit(img2,(300, 0))
+window.blit(img2,(600, 0))
 
 pygame.display.flip()
 
@@ -272,7 +272,7 @@ while True:
 我們利用 `pygame.transform` 這個模組來幫助我們針對某個待渲染的東西做一些變換，例如這邊利用 `pygame.transform.scale` 來縮放一張圖片，把他改成 300x440 的大小；有利用 `pygame.transform.rotate` 來旋轉一張圖片，旋轉 1度。
 
 效果圖如下：
-![](https://i.imgur.com/yvtmGQz.jpg)
+![](https://i.imgur.com/sZXZSSi.jpg)
 
 ### p4.mixer.sample1 點擊播放 bgm
 
