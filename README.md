@@ -60,7 +60,7 @@ while True:
 - `pygame.image`：可以幫助我們輸出一張圖片在視窗上。
 - `pygame.mixer`：可以幫助我們播放出聲音。
 
-## 正文
+## PyGame 教學
 
 ### p1.font.sample1 用預設字體輸出文字
 
@@ -419,3 +419,356 @@ while True:
 ![](https://i.imgur.com/btEQi9N.png)
 
 如果有興趣的話可以去看看[REPO](https://github.com/LeeLin2602/Mota-Magic-Tower)，可以給助教點星星喔～
+
+## Class 介紹
+
+### 何為 Class？
+
+#### Class 將一大堆資料包在一起
+```
+class Student:
+    def __init__(self, name, stuid, score1, score2):
+        self.name = name
+        self.id = stuid
+        self.score1 = score1
+        self.score2 = score2
+
+    def get_avg(self):
+        return (self.score1 + self.score2) / 2
+		
+student = Student("甲同學", 101, 95, 97)
+print(student.get_avg())
+```
+
+以這個例子，我們可以創建一個 `Student` 的類別：
+- `class` 中會有很多 function，這些 function 會有一個 `self` 的參數，因此 function 內可以使用這個類別其他屬性、functions（`self` 意味著自己）
+- `__init__` 就是你去新增一個物件時會去呼叫的 function。
+
+#### 我們為什麼會使用 function？
+
+以一下這段程式碼為例，他會計算 $P^x_y$：
+```
+x = int(input())
+y = int(input())
+
+ans1 = 1
+for i in range(x + 1):
+    ans1 *= x
+
+ans2 = 1
+for i in range(y + 1):
+    ans2 *= y
+
+
+print(ans1 // ans2)
+```
+
+但我們看來覺得很冗，因為他需要計算多次階乘，因此在程式碼的多處都寫著類似的程式碼，因此我們會使用 function 把他們包起來：
+
+```
+def factorial(x):
+    ans = 1
+    for i in range(x + 1):
+        ans *= x
+    return ans
+
+x = int(input())
+y = int(input())
+
+print(factorial(x) // factorial(y))
+```
+
+如此，程式碼便變得清晰、更好維護，且出錯機率更低。
+
+#### 我們為什麼會使用 class？
+
+一個最簡單的場景就是我們要把很多資料聚集起來，之後對他們進行一些處理：
+```
+names    = {}
+deposits = []
+count    = 0
+
+def newAccount(name):
+    if name in names:
+        return False
+    else:
+        names[name] = count
+        count += 1
+        deposit.append(0)
+        return True
+
+def save(name, amount):
+    if name not in names or amount <= 0:
+        return False
+    else:
+        index = names[name]
+        deposits[index] += amount
+        return True
+
+def withdraw(name, amount):
+    if name not in names or amount <= 0:
+        return False
+    else:
+        index = names[name]
+        if deposits[index] - amount >= 0:
+            deposits[index] -= amount
+            return True
+        else:
+            return False
+```
+
+這是一個銀行帳號系統，你可以開通新的帳號，然後來存款、提款，但這樣子的寫法很複雜，而且資料是分散的，你沒辦法從一個人的名字直接看到他的存款。
+
+如果我們運用 class，就可以用這樣子的作法做到一樣的功能性，而且每一位用戶他的所有資料是綁定在一起的，我們可以很容易的做到擴充：
+
+```
+class account:
+    def __init__(self, name):
+        self.name = name
+        self.deposit = 0
+
+    def save(self, amount):
+        if amount <= 0:
+            return False
+        self.deposit += amount
+        return True
+
+    def withdraw(self, amount):
+        if amount <= 0 or self.deposit < amount:
+            return False
+        self.deposit -= amount
+        return True
+```
+
+## 範例 - OOXX
+
+```
+import pygame
+from random import randint
+from time import time
+
+pygame.init()
+
+window = pygame.display.set_mode((390,390))
+pygame.display.set_caption("PyGame - OOXX")
+window.fill((255, 255, 255))
+
+imgo = pygame.transform.scale(pygame.image.load('o.png'), (128, 128))
+imgx = pygame.transform.scale(pygame.image.load('x.png'), (128, 128))
+
+class Block:
+    def __init__(self, r, c):
+        # 0 -> empty
+        # 1 -> O
+        # 2 -> X
+        self.type = 0
+        self.r = r
+        self.c = c
+    
+    def turn(self, round_):
+        if self.type:
+            return False
+        if round_ == 0:
+            self.type = 1
+        else:
+            self.type = 2
+        return True
+
+    def blit(self, window):
+        if self.type == 1:
+            window.blit(imgo, (self.r * 130, self.c * 130))
+        elif self.type == 2:
+            window.blit(imgx, (self.r * 130, self.c * 130))
+
+
+class Game:
+    def __init__(self):
+        self.blocks = [[], [], []]
+        self.round_ = 0
+        for i in range(3):
+            for j in range(3):
+                self.blocks[i].append(Block(i, j))
+
+    def click(self, x, y):
+        if self.round_ == -1:
+            return
+
+        x //= 129
+        y //= 129
+        if self.blocks[x][y].turn(self.round_):
+            self.round_ = not self.round_
+
+    def blit(self, window):
+        pygame.draw.rect(window, (0, 0, 0), (128,0,2,390))
+        pygame.draw.rect(window, (0, 0, 0), (258,0,2,390))
+        pygame.draw.rect(window, (0, 0, 0), (0,128,390,2))
+        pygame.draw.rect(window, (0, 0, 0), (0,258,390,2))
+
+        for r, row in enumerate(self.blocks):
+            for c, blk in enumerate(row):
+                blk.blit(window)
+
+        if self.isSet():
+            self.round_ = -1
+
+        pygame.display.flip()
+
+    def isSet(self):
+        for i in range(3):
+            if self.blocks[i][0].type != 0 and self.blocks[i][0].type == self.blocks[i][1].type and self.blocks[i][1].type == self.blocks[i][2].type:
+                pygame.draw.rect(window, (255, 0, 0), (128 * i + 64,10,10,370))
+                return True
+            if self.blocks[0][i].type != 0 and self.blocks[0][i].type == self.blocks[1][i].type and self.blocks[1][i].type == self.blocks[2][i].type:
+                pygame.draw.rect(window, (255, 0, 0), (10,128 * i + 64,370,10))
+                return True
+
+        for i in range(3):
+            for j in range(3):
+                if self.blocks[i][j].type == 0:
+                    return False
+
+        return True
+
+#### --- 進入遊戲 --- ####
+
+game = Game()
+
+while True:
+    for e in pygame.event.get():
+        if e.type == pygame.QUIT:
+            exit(0)
+        if e.type == pygame.MOUSEBUTTONDOWN:
+            x, y = pygame.mouse.get_pos()
+            game.click(x, y)
+
+    game.blit(window)
+```
+- `pygame.draw.rect(window, (0, 0, 0), (128,0,2,390))`
+	- 意味著從 (128, 0) 這個點繪製一個大小是 (2, 390) 的黑色矩形
+- 會有一個 `game` 的 class 代表那一場 OOXX 的遊戲：
+	- 會有 `isSet()` function 會告訴我們遊戲是否結束
+	- 會有 `blit(window)` function 會在 `window` 上進行一次螢幕繪製
+	- 會有 `click(x, y)` function 會幫我們處理視窗點擊
+	- 會有一個屬性 `blocks` 包含 3 * 3 個 `block`
+- 會有一個 `block` 的 class 代表那是一個玩家可以點的格子：
+	- 有一個 `type` 代表他的狀態
+		- 0 意味著沒點過，1 意味著 1 號玩家， 2 意味著 2 號玩家
+	- 會有 `blit(window)` 在 `window` 上繪製他
+
+這是一個簡單的 class 範例，可以幫助我們讓程式變的簡單明瞭。如果我們想要讓遊戲可以一直玩，不需要重開程式，我們也可以透過回收舊的 game 來做到：
+
+```
+import pygame
+from random import randint
+from time import time
+
+pygame.init()
+
+window = pygame.display.set_mode((390,390))
+pygame.display.set_caption("PyGame - OOXX")
+
+imgo = pygame.transform.scale(pygame.image.load('o.png'), (128, 128))
+imgx = pygame.transform.scale(pygame.image.load('x.png'), (128, 128))
+
+class Block:
+    def __init__(self, r, c):
+        # 0 -> empty
+        # 1 -> O
+        # 2 -> X
+        self.type = 0
+        self.r = r
+        self.c = c
+    
+    def turn(self, round_):
+        if self.type:
+            return False
+        if round_ == 0:
+            self.type = 1
+        else:
+            self.type = 2
+        return True
+
+    def blit(self, window):
+        if self.type == 1:
+            window.blit(imgo, (self.r * 130, self.c * 130))
+        elif self.type == 2:
+            window.blit(imgx, (self.r * 130, self.c * 130))
+
+
+class Game:
+    def __init__(self):
+        self.blocks = [[], [], []]
+        self.round_ = 0
+        for i in range(3):
+            for j in range(3):
+                self.blocks[i].append(Block(i, j))
+
+    def click(self, x, y):
+        if self.round_ == -1:
+            return
+
+        x //= 129
+        y //= 129
+        if self.blocks[x][y].turn(self.round_):
+            self.round_ = not self.round_
+
+    def blit(self, window):
+        pygame.draw.rect(window, (0, 0, 0), (128,0,2,390)) 
+        pygame.draw.rect(window, (0, 0, 0), (258,0,2,390))
+        pygame.draw.rect(window, (0, 0, 0), (0,128,390,2))
+        pygame.draw.rect(window, (0, 0, 0), (0,258,390,2))
+
+        for r, row in enumerate(self.blocks):
+            for c, blk in enumerate(row):
+                blk.blit(window)
+
+        if self.isSet():
+            self.round_ = -1
+
+        pygame.display.flip()
+
+    def isSet(self):
+        for i in range(3):
+            if self.blocks[i][0].type != 0 and self.blocks[i][0].type == self.blocks[i][1].type and self.blocks[i][1].type == self.blocks[i][2].type:
+                pygame.draw.rect(window, (255, 0, 0), (128 * i + 64,10,10,370))
+                return True
+            if self.blocks[0][i].type != 0 and self.blocks[0][i].type == self.blocks[1][i].type and self.blocks[1][i].type == self.blocks[2][i].type:
+                pygame.draw.rect(window, (255, 0, 0), (10,128 * i + 64,370,10))
+                return True
+
+        for i in range(3):
+            for j in range(3):
+                if self.blocks[i][j].type == 0:
+                    return False
+
+        return True
+
+#### --- 進入遊戲 --- ####
+
+while True:
+
+    window.fill((255, 255, 255))
+    game = Game()
+
+    while not game.isSet():
+
+        for e in pygame.event.get():
+            if e.type == pygame.QUIT:
+                exit(0)
+            if e.type == pygame.MOUSEBUTTONDOWN:
+                x, y = pygame.mouse.get_pos()
+                game.click(x, y)
+
+        game.blit(window)
+
+    del game
+
+    # 點一下繼續遊戲
+    flg = 1
+    while flg:
+        for e in pygame.event.get():
+            if e.type == pygame.QUIT:
+                exit(0)
+            if e.type == pygame.MOUSEBUTTONDOWN:
+                flg = 0
+```
