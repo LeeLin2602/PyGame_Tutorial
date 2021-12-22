@@ -413,13 +413,6 @@ while True:
 效果圖如下：
 ![](https://i.imgur.com/CGMMgrJ.png)
 
-## 範例 - 魔塔遊戲
-
-這是助教以前吃飽沒事幹用 PyGame 寫的遊戲，只使用了前面介紹的 4 個工具做出來的 RPG 遊戲，效果圖如下：
-![](https://i.imgur.com/btEQi9N.png)
-
-如果有興趣的話可以去看看[REPO](https://github.com/LeeLin2602/Mota-Magic-Tower)，可以給助教點星星喔～
-
 ## Class 介紹
 
 ### 何為 Class？
@@ -931,3 +924,11 @@ while True:
             if flg:
                 game.setFocus(None, None)
 ```
+
+
+## 範例 - 魔塔遊戲
+
+這是助教以前吃飽沒事幹用 PyGame 寫的遊戲，只使用了前面介紹的 4 個工具做出來的 RPG 遊戲，效果圖如下：
+![](https://i.imgur.com/btEQi9N.png)
+
+如果有興趣的話可以去看看[REPO](https://github.com/LeeLin2602/Mota-Magic-Tower)，可以給助教點星星喔～
