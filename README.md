@@ -943,6 +943,7 @@ while True:
                 game.setFocus(None, None)
 ```
 
+![](https://i.imgur.com/feOsGkl.png)
 
 ## 範例 - 魔塔遊戲
 
