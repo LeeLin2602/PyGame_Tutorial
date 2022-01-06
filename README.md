@@ -446,11 +446,11 @@ y = int(input())
 
 ans1 = 1
 for i in range(x + 1):
-    ans1 *= x
+    ans1 *= i
 
 ans2 = 1
 for i in range(y + 1):
-    ans2 *= y
+    ans2 *= i
 
 
 print(ans1 // ans2)
@@ -462,7 +462,7 @@ print(ans1 // ans2)
 def factorial(x):
     ans = 1
     for i in range(x + 1):
-        ans *= x
+        ans *= i
     return ans
 
 x = int(input())
